@@ -2,8 +2,10 @@ import SizeAndPositionManager, { Range } from "./SizeAndPositionManager";
 import { ALIGNMENT, SCROLL_CHANGE_REASON } from "./constants";
 import { STYLE_WRAPPER, STYLE_INNER, STYLE_ITEM } from "./styles";
 import { CellInfo, CSSProperties, ItemSize } from "./types";
-import { toInlineStyle } from "./utils";
+import { toInlineStyle, throttle } from "./utils";
 
+const DEFAULT_SCROLL_RATE = 1000 / 10;
+const DEFAULT_SCROLL_TIMEOUT = 1000 / 5;
 const DEFAULT_OVERSCAN_ROW_COUNT = 3;
 const DEFAULT_OVERSCAN_COLUMN_COUNT = 1;
 
@@ -30,6 +32,9 @@ export interface Options {
     columnCount: number;
     columnWidth: ItemSize;
     estimatedColumnWidth?: number;
+    // performance tuning
+    scrollRate?: number; // ms
+    scrollTimeout?: number; // ms
     // overscan count
     overscanColumnCount?: number;
     overscanRowCount?: number;
@@ -80,6 +85,8 @@ export class VirtualGrid {
     constructor(private container: HTMLElement, options: Options) {
 
         this.options = Object.assign({
+            scrollRate: DEFAULT_SCROLL_RATE,
+            scrollTimeout: DEFAULT_SCROLL_TIMEOUT,
             overscanRowCount: DEFAULT_OVERSCAN_ROW_COUNT,
             overscanColumnCount: DEFAULT_OVERSCAN_COLUMN_COUNT,
         }, options);
@@ -109,6 +116,8 @@ export class VirtualGrid {
             height,
             className = '',
             style = {},
+            scrollRate = DEFAULT_SCROLL_RATE,
+            scrollTimeout = DEFAULT_SCROLL_TIMEOUT,
             scrollTopOffset, scrollToRowIndex,
             scrollLeftOffset, scrollToColumnIndex
         } = this.options;
@@ -143,7 +152,7 @@ export class VirtualGrid {
             this.wrapper.scrollLeft = offsetLeft;
             this.wrapper.scrollTop = offsetTop;
 
-            this.wrapper.addEventListener('scroll', this.handleScroll, {
+            this.wrapper.addEventListener('scroll', throttle(this.handleScroll, scrollTimeout, scrollRate), {
                 passive: true,
             });
         });
@@ -272,7 +281,12 @@ export class VirtualGrid {
     private handleScroll = (ev: Event) => {
         const offset = this.getNodeOffset();
 
+        if (ev == undefined) {
+            console.log(ev);
+        }
+
         if (
+            ev == undefined ||
             offset.left < 0 ||
             offset.top < 0 ||
             ev.target !== this.wrapper ||
