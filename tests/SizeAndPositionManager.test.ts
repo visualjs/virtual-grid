@@ -171,7 +171,7 @@ describe('SizeAndPositionManager', () => {
 
 	describe('getUpdatedOffsetForIndex', () => {
 		function getUpdatedOffsetForIndexHelper({
-			align = ALIGNMENT.START,
+			align = 'start',
 			itemCount = 10,
 			itemSize = ITEM_SIZE,
 			containerSize = 50,
@@ -254,21 +254,21 @@ describe('SizeAndPositionManager', () => {
 		it('should honor specified :align values', () => {
 			expect(
 				getUpdatedOffsetForIndexHelper({
-					align: ALIGNMENT.START,
+					align: 'start',
 					currentOffset: 0,
 					targetIndex: 5,
 				}),
 			).toEqual(50);
 			expect(
 				getUpdatedOffsetForIndexHelper({
-					align: ALIGNMENT.END,
+					align: 'end',
 					currentOffset: 50,
 					targetIndex: 5,
 				}),
 			).toEqual(10);
 			expect(
 				getUpdatedOffsetForIndexHelper({
-					align: ALIGNMENT.CENTER,
+					align: 'center',
 					currentOffset: 50,
 					targetIndex: 5,
 				}),
@@ -278,21 +278,21 @@ describe('SizeAndPositionManager', () => {
 		it('should not scroll past the safe bounds even if the specified :align requests it', () => {
 			expect(
 				getUpdatedOffsetForIndexHelper({
-					align: ALIGNMENT.END,
+					align: 'end',
 					currentOffset: 50,
 					targetIndex: 0,
 				}),
 			).toEqual(0);
 			expect(
 				getUpdatedOffsetForIndexHelper({
-					align: ALIGNMENT.CENTER,
+					align: 'center',
 					currentOffset: 50,
 					targetIndex: 1,
 				}),
 			).toEqual(0);
 			expect(
 				getUpdatedOffsetForIndexHelper({
-					align: ALIGNMENT.START,
+					align: 'start',
 					currentOffset: 0,
 					targetIndex: 9,
 				}),
@@ -304,7 +304,7 @@ describe('SizeAndPositionManager', () => {
 			// Not sure if this edge case is worth "fixing" or just acknowledging...
 			expect(
 				getUpdatedOffsetForIndexHelper({
-					align: ALIGNMENT.CENTER,
+					align: 'center',
 					currentOffset: 0,
 					targetIndex: 8,
 				}),
