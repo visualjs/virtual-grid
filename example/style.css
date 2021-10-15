@@ -1,0 +1,31 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #fafafa;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica", "Arial", sans-serif;
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+}
+
+.virtual-grid {
+    background: #fff;
+    border-radius: 2px;
+    border: 1px solid #dedede;
+	margin: 20px auto;
+}
+
+.row {
+    box-sizing: border-box;
+    border-bottom: 1px solid #eee;
+}
+
+.cell {
+    box-sizing: border-box;
+    border-right: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
